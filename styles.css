@@ -117,9 +117,25 @@ body {
 
 /* Voeg dit toe aan je bestaande CSS */
 .protected-content {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.protected-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.protected-content canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
     pointer-events: none;
 } 
