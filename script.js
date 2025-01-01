@@ -103,4 +103,50 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    // Canvas beveiliging toevoegen
+    const protectedImages = document.querySelectorAll('.protected-content img');
+    
+    protectedImages.forEach(img => {
+        img.style.opacity = '0.99'; // Voorkomt direct screenshotten
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        img.parentElement.appendChild(canvas);
+        
+        img.onload = function() {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            // Teken de afbeelding op canvas met een subtiel patroon
+            ctx.drawImage(img, 0, 0);
+            
+            // Voeg een onzichtbaar watermerk toe
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.01)';
+            for(let i = 0; i < canvas.width; i += 50) {
+                for(let j = 0; j < canvas.height; j += 50) {
+                    ctx.fillText('Pjotters-Games', i, j);
+                }
+            }
+        };
+    });
+
+    // Extra beveiliging voor het scherm
+    setInterval(() => {
+        if (window.outerWidth - window.innerWidth > 100 || 
+            window.outerHeight - window.innerHeight > 100) {
+            document.body.style.opacity = '0.1';
+        } else {
+            document.body.style.opacity = '1';
+        }
+    }, 1000);
+
+    // Detecteer screen capture API
+    if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+        navigator.mediaDevices.getDisplayMedia = async function() {
+            alert('Screen recording is niet toegestaan!');
+            throw new Error('Screen capture is geblokkeerd');
+        };
+    }
 }); 
