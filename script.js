@@ -149,4 +149,43 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('Screen capture is geblokkeerd');
         };
     }
+
+    // Scherm zwart maken bij screenshot pogingen
+    const blackOverlay = document.createElement('div');
+    blackOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        z-index: 10000;
+        display: none;
+    `;
+    document.body.appendChild(blackOverlay);
+
+    // Screenshot detectie voor Mac
+    document.addEventListener('keydown', function(e) {
+        if (
+            (e.metaKey && e.shiftKey && e.key === '5') || // Mac screenshot
+            (e.metaKey && e.shiftKey && e.key === '4') || // Mac screenshot
+            (e.metaKey && e.shiftKey && e.key === '3')    // Mac screenshot
+        ) {
+            blackOverlay.style.display = 'block';
+            setTimeout(() => {
+                blackOverlay.style.display = 'none';
+            }, 500);
+        }
+    });
+
+    // Extra beveiliging voor window focus
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            blackOverlay.style.display = 'block';
+        } else {
+            setTimeout(() => {
+                blackOverlay.style.display = 'none';
+            }, 300);
+        }
+    });
 }); 
